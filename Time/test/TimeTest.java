@@ -13,7 +13,7 @@ import fontys.time.*;
 
 /**
  *
- * @author Etienne
+ * @author Roel
  */
 public class TimeTest {    
     
@@ -32,14 +32,28 @@ public class TimeTest {
     public void setUp() {
     }
     
-    @Test
-    public void TestArguments(){
-        
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorTestMonth(){
+    // @param m 1≤m≤12
+        Time time = new Time(2014, 14, 3, 4, 25);
     }
     
-    @Test
-    public void ConstructorTest(){
-        
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorTestDay(){
+    // @param d 1≤d≤31
+        Time time = new Time(2014, 12, 35, 4, 25);        
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorTestHour(){
+    // @param h 0≤h≤23
+        Time time = new Time(2014, 12, 3, -3, 25);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorTestMin(){
+    // @param m 0≤m≤59
+        Time time = new Time(2014, 12, 3, 4, 132);
     }
     
     /**
@@ -48,8 +62,16 @@ public class TimeTest {
      * @return  this time plus minutes
      */
     @Test
-    public void PlusTest(){
+    public void plusTest(){
+        Time time = new Time(2014, 12, 2, 3, 5);
+        time = (Time) time.plus(10);
         
+        assertEquals("Wrong amount of minutes added", 15, time.getMinutes());
+        
+        time = new Time(2014, 12, 2, 3, 25);
+        time = (Time) time.plus(-10);
+        
+        assertEquals("Wrong amount of minutes added", 15, time.getMinutes());
     }
     
     /**
@@ -58,8 +80,12 @@ public class TimeTest {
      * @return the difference between this time and [time] expressed in minutes
      */
     @Test
-    public void DifferenceTest(){
+    public void differenceTest(){
+        Time time1 = new Time(2014, 12, 2, 3, 5);
+        Time time2 = new Time(2014, 12, 2, 3, 15);
         
+        int difference = time1.difference(time2);
+        assertEquals("Wrong difference returned", 10, difference);
     }    
 
     @After
