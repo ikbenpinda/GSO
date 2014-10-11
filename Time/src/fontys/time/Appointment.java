@@ -66,7 +66,11 @@ public class Appointment {
      * @return Iterator for invitees
      */
     public Iterator<Contact> invitees() {
-        return invitees.iterator();
+        if (invitees.size() > 0) {
+            return invitees.iterator();
+        } else {
+            return null;
+        }
     }
 
     /**

@@ -79,6 +79,10 @@ public class Contact {
      * @return Iterator for appointments
      */
     public Iterator<Appointment> appointments() {
-        return agenda.iterator();
+        if (agenda.size() > 0) {
+            return agenda.iterator();
+        } else {
+            return null;
+        }
     }
 }

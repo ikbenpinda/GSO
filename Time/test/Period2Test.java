@@ -16,11 +16,11 @@ import fontys.time.*;
  *
  * @author Etienne [B2]
  */
-public class PeriodTest {
+public class Period2Test {
     // editor-fold comments zijn het XML-equivalent van #region/#endregion in C#.
 
     //<editor-fold defaultstate="collapsed" desc="Fields.">
-    static Period period;
+    static Period2 period;
     static Time t1;
     static Time t2;
 
@@ -159,7 +159,7 @@ public class PeriodTest {
     public static void setUpClass() {
         t1 = new Time(2014, 10, 5, 12, 15);
         t2 = new Time(2014, 10, 5, 12, 45);
-        period = new Period(t1, t2);
+        period = new Period2(t1, t2);
     }
 
     @AfterClass
