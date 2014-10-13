@@ -7,25 +7,29 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.Ignore;
 import static org.junit.Assert.*;
 import fontys.time.*;
 
 /**
- * Getters worden niet getest, rest wel.
- *
+ * Testclass for the IPeriod implementations.
  * @author Etienne [B2]
  */
 public class PeriodTest {
     // editor-fold comments zijn het XML-equivalent van #region/#endregion in C#.
 
     //<editor-fold defaultstate="collapsed" desc="Fields.">
+    
     static Period period;
     static Time t1;
     static Time t2;
 
     //</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="Unit Tests.">
+    
+    /**
+     * Tests tied to the construction of a period.
+     */
     @Test
     public void PeriodTest() {
         // * @param bt begin time 'bt' must be earlier than end time 'et'.
@@ -34,56 +38,18 @@ public class PeriodTest {
         assertNotNull("EndTime shouldn't be null.", period.getEndTime());
     }
 
-    @Ignore(value = "Tests preconditions, which are currently unknown.")
-    @Test
-    public void PreconditionTest() {
-
-        try {//TODO
-            period.setBeginTime(new Time(2014, 10, 5, 12, 15));
-        } catch (IllegalArgumentException e) {
-            fail("BeginTime needs to be set.");
-        }
-
-        try {//TODO
-            period.setBeginTime(new Time(2014, 10, 5, 12, 15));
-        } catch (IllegalArgumentException e) {
-            fail("BeginTime needs to be set.");
-        }
-
-        try {//TODO
-            period.setBeginTime(new Time(2014, 10, 5, 12, 15));
-        } catch (IllegalArgumentException e) {
-            fail("BeginTime needs to be set.");
-        }
-
-        try {//TODO
-            period.setEndTime(new Time(2014, 10, 5, 12, 15));
-        } catch (IllegalArgumentException e) {
-            fail("EndTime needs to be set.");
-        }
-
-        try {//TODO
-            period.setEndTime(new Time(2014, 10, 5, 12, 15));
-        } catch (IllegalArgumentException e) {
-            fail("EndTime needs to be set.");
-        }
-
-        try {//TODO
-            period.setEndTime(new Time(2014, 10, 5, 12, 15));
-        } catch (IllegalArgumentException e) {
-            fail("EndTime needs to be set.");
-        }
-    }
-
+    /**
+     * Tests the correct measuring of a periods length.
+     */
     @Test
     public void lengthTest() {
-        assertTrue("Period exceeded Integer.MAX_VALUE.", period.length() < Integer.MAX_VALUE);
-        assertTrue("Period is not a positive amount of minutes.", period.length() > 0);
-
+        Period p = new Period(new Time(2014, 8, 26, 15, 33), new Time(2014, 8, 26, 16, 33));
+        assertTrue("Period is not a positive amount of minutes." + p.length(), p.length() > 0);
+        assertTrue("Period does not return the right amount of minutes.", p.length() == 60);
     }
 
     @Test
-    public void setBeginTimeTest(/*ITime beginTime*/) {
+    public void setBeginTimeTest(){
         //* @param beginTime must be earlier than the current end time
         //* of this period
         //period.setBeginTime(beginTime);
@@ -91,7 +57,7 @@ public class PeriodTest {
     }
 
     @Test
-    public void setEndTimeTest(/*ITime endTime*/) {
+    public void setEndTimeTest() {
         //* @param endTime must be later than the current begin time
         //* of this period
         //period.setEndTime(endTime);
@@ -99,13 +65,11 @@ public class PeriodTest {
     }
 
     @Test
-    public void moveTest(/*int minutes*/) {
-        //* @param minutes (a negative value is allowed)
-        // What to test?
+    public void moveTest() {
         //* the begin and end time of this period will be moved up both with [minutes]
-        //* minutes        
-        //Clone is also possible but considered badly implemented.
-        //Interface for future use of mocks.
+        //* minutes       
+        // .Clone() is also possible but considered badly implemented.
+        // Interface for future use of mocks.
         int minutes = 80;
         IPeriod p2 = new Period(period.getBeginTime(), period.getEndTime());
         p2.move(minutes);
@@ -116,45 +80,62 @@ public class PeriodTest {
     }
 
     @Test
-    public void changeLengthWithTest(/*int minutes*/) {
+    public void changeLengthWithTest() {
         //* @param minutes  minutes + length of this period must be positive  
-        int minutes = 80;
-        assertTrue("Minutes is 0 or negative.", minutes > 0);
+        int minutes = 90;
+        IPeriod p = new Period(new Time(2014, 11, 21, 7, 0), new Time(2014, 11, 26, 8, 0));
+        p.changeLengthWith(minutes);
+        assertTrue("Minutes + Length() is 0 or negative.", p.length() > 0);
+        IPeriod check = new Period(new Time(2014, 11, 21, 7, 0), new Time(2014, 11, 26, 9, 30));
+        assertEquals("Time not set correctly.", p, check);
     }
 
     @Test
-    public void isPartOfTest(/*IPeriod p*/) {
-        //* @return true if all moments within this period are included within [period], 
+    public void isPartOfTest() {
+        //* @return true if all moments within this period are included within [period],         
+        IPeriod p1 = new Period(new Time(2012, 12, 30, 23, 59), new Time(2013, 1, 1, 12, 0));
+        IPeriod p2 = new Period(new Time(2012, 8, 26, 13, 37), new Time(2014, 8, 26, 13, 37));
+        assertTrue("Period does not cover all moments.", p1.isPartOf(p2));
         //* otherwise false
-        IPeriod p = new Period(new Time(2014, 8, 26, 13, 37), new Time(2014, 8, 26, 16, 49));
-        assertTrue("Period does not cover all moments.",
-                period.getBeginTime().compareTo(p.getBeginTime()) < 0
-                && period.getEndTime().compareTo(p.getEndTime()) < 0);
+        assertFalse("Period p2 is not part of p1.", p2.isPartOf(p1));
     }
 
     @Test
-    public void unionWithTest(/*IPeriod p*/) {
-        //* @return if this period and [period p] are consecutive or possess a
-        //* common intersection, then the smallest period p will be returned, 
-        //* for which this period and [period p] are part of p, 
-        //* otherwise null will be returned         
-        //assertEquals("", new Object(), new Object());
-        //assertNull("", null);
+    public void unionWithTest() {
+        
+     IPeriod p_smaller = new Period(
+             new Time(2014, 11, 4, 12, 0), new Time(2014, 11, 15, 12, 0));
+     IPeriod p_bigger = new Period(
+             new Time(2014, 11, 12, 12, 0), new Time(2014, 11, 24, 12, 0));
+     IPeriod p_null = new Period(
+             new Time(2014, 1, 1, 12, 0), new Time(2014, 1, 1, 23, 59));
+     
+     //* @return if this period and [period] are consecutive or possess a
+     //* common intersection, then the smallest period p will be returned, 
+     //* for which this period and [period] are part of p, 
+     assertEquals("The bigger period was returned. Or the intersection was not found.", p_smaller, p_smaller.unionWith(p_bigger));
+     //* otherwise null will be returned 
+     assertEquals("No null returned.", null, p_smaller.unionWith(p_null));
     }
 
     @Test
-    public void intersectionWithTest(/*IPeriod p*/) {
-        //* @return the largest period which is part of this period 
-        //* and [period] will be returned; if the intersection is empty null will
-        //* be returned        
-        //  
-        //assertEquals("", new Object(), new Object());
-        //assertNull("", null);
+    public void intersectionWithTest() {
+        IPeriod p1 = new Period(
+                new Time(2014, 11, 4, 12, 0), new Time(2014, 11, 15, 12, 0));
+        IPeriod p2 = new Period(
+                new Time(2014, 11, 2, 12, 0), new Time(2014, 11, 6, 12, 0));
+        
+        IPeriod result = p1.intersectionWith(p2);
+        IPeriod expResult = new Period(
+                new Time(2014, 11, 2, 12, 0), new Time(2014, 11, 15, 12, 0));
+        
+        assertEquals("Periods are not intersecting.", result, expResult);
     }
 
     //</editor-fold>
-    //<editor-fold defaultstate="collapsed" desc="Setup.">
-    //-- Test Setup ------------------------------------------------------------        
+    
+    //<editor-fold defaultstate="collapsed" desc="//-- Test Setup ------------------------------------------------------------        ">
+    
     @BeforeClass
     public static void setUpClass() {
         t1 = new Time(2014, 10, 5, 12, 15);
