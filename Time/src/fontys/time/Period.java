@@ -10,20 +10,24 @@ public class Period implements IPeriod {
     
     private ITime beginTime;
     private ITime endTime;
-            
+     
+    // </editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Methods.">
+    
     /**
      * Creates a new IPeriod implementation with begin time bt and end time et
      * @param bt begin time bt must be earlier than end time et
      * @param et
      */
     public Period(ITime bt, ITime et) {
+        if (bt.compareTo(et) > 0){
+            throw new IllegalArgumentException("beginTime must be earlier than endTime!");
+        }
+        
         this.beginTime = bt;
         this.endTime = et;
-    }
-    
-    // </editor-fold>
-    
-    //<editor-fold defaultstate="collapsed" desc="Methods.">
+    }        
     
     /**
      * Returns the time this period begins.
@@ -63,6 +67,8 @@ public class Period implements IPeriod {
      */
     @Override
     public void setBeginTime(ITime beginTime) {
+        if (beginTime.compareTo(endTime) > 0)
+            throw new IllegalArgumentException("beginTime can't be after endTime!");
         this.beginTime = beginTime;
     }
 
@@ -72,6 +78,8 @@ public class Period implements IPeriod {
      */
     @Override
     public void setEndTime(ITime endTime) {
+        if (endTime.compareTo(beginTime) < 0)
+            throw new IllegalArgumentException("endTime can't be before beginTime!");
         this.endTime = endTime;
     }
 
@@ -93,6 +101,9 @@ public class Period implements IPeriod {
      */
     @Override
     public void changeLengthWith(int minutes) {
+        if (minutes < 0 && minutes > length()) {
+            throw new IllegalArgumentException("Can't move back past the begin!");
+        }
         endTime.plus(minutes);
     }
 
@@ -105,10 +116,10 @@ public class Period implements IPeriod {
     @Override
     public boolean isPartOf(IPeriod period) {
         // Before -1 / Same 0 / After +1
-        boolean afterStart = this.beginTime.compareTo(period.getBeginTime()) < 0;
-        boolean beforeEnd = this.endTime.compareTo(endTime) > 0;
-        
-        if (afterStart & beforeEnd){
+        boolean afterStart = beginTime.compareTo(period.getBeginTime()) > 0;
+        boolean beforeEnd = endTime.compareTo(period.getEndTime()) < 0;
+                
+        if(afterStart && beforeEnd){
             return true;
         }
         
