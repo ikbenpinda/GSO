@@ -6,8 +6,10 @@ package src;
 public class BannerController {
 
     private AEXBanner banner;
-
-    public BannerController(AEXBanner banner){
+    private IEffectenBeurs effectenbeurs;
+    
+    public BannerController(AEXBanner banner, IEffectenBeurs effectenbeurs){
         this.banner =  banner;
+        this.effectenbeurs = effectenbeurs;
     }
 }
