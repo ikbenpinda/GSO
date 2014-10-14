@@ -5,7 +5,7 @@ package src;
  */
 public class AEXBanner {
 
-    public void setKoersen(String koersen){
+    public void setKoersen(String koersen) {
 
     }
 }
